@@ -86,9 +86,11 @@ class ExpenseSerializer(serializers.ModelSerializer):
 # TRANSACTION SERIALIZER
 # --------------------------
 class TransactionSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = ['id', 'amount', 'transaction_date', 'type', 'description', 'user', 'category', 'category_name']
 
     def validate_amount(self, value):
         # Ensure transaction amount is greater than zero

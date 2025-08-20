@@ -28,5 +28,4 @@ urlpatterns = [
     path('api/', include('users.urls')),
     path('', include('categories.urls')),
     path("login/", obtain_auth_token, name="user-login"),
-    path('users/', include('users.urls')),
 ]
