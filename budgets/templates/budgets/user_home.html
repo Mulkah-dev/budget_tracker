@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 20px;
+            background: #f9f9f9;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #ddd;
+        }
+        header h1 {
+            margin: 0;
+        }
+        header a {
+            text-decoration: none;
+            color: #fff;
+            background: #007bff;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        /* Top Metrics */
+        .metrics {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            gap: 20px;
+        }
+        .metric-box {
+            flex: 1 1 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .metric-box h3 {
+            margin-bottom: 10px;
+        }
+        .metric-box p {
+            font-size: 1.5em;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 30px;
+        }
+        .quick-actions h2 {
+            margin-bottom: 15px;
+        }
+        .actions {
+            display: flex;
+            gap: 20px;
+        }
+        .action-box {
+            flex: 1;
+            background: #007bff;
+            color: #fff;
+            padding: 30px 0;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .action-box:hover {
+            background: #0056b3;
+        }
+
+        /* Category Budgets */
+        .category-budgets {
+            margin-bottom: 30px;
+        }
+        .category-budgets h2 {
+            margin-bottom: 15px;
+        }
+        .category-budgets ul {
+            list-style: none;
+            padding: 0;
+        }
+        .category-budgets li {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Reports */
+        .reports h2 {
+            margin-bottom: 15px;
+        }
+        .reports-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 100px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Budget Tracker</h1>
+    <a href="{% url 'logout_user' %}">Logout</a>
+</header>
+
+<!-- Top Metrics -->
+<div class="metrics">
+    <div class="metric-box">
+        <h3>Total Budget</h3>
+        <p>{{ total_budget|default:0 }}</p>
+    </div>
+    <div class="metric-box">
+        <h3>Total Expenses</h3>
+        <p>{{ total_expenses|default:0 }}</p>
+    </div>
+    <div class="metric-box">
+        <h3>Balance</h3>
+        <p>{{ total_budget|default:0|add:"-total_expenses"|floatformat:2 }}</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions">
+        <a href="{% url 'add_transaction' %}" class="action-box">Add Transaction</a>
+        <a href="{% url 'add_category' %}" class="action-box">Add Category</a>
+        <a href="{% url 'add_budget' %}" class="action-box">Add Budget</a>
+    </div>
+</div>
+
+<!-- Budgets by Category -->
+<div class="category-budgets">
+    <h2>Budgets by Category</h2>
+    <ul>
+        {% for category in categories_with_budgets %}
+            <li>
+                <span>{{ category.name }}</span>
+                <span>{{ category.total_budget|default:0|floatformat:2 }}</span>
+            </li>
+        {% empty %}
+            <li>No categories or budgets yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<h2>Transactions</h2>
+{% if transactions %}
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr style="background-color:#f2f2f2;">
+      <th style="padding:8px; border:1px solid #ddd;">Date</th>
+      <th style="padding:8px; border:1px solid #ddd;">Category</th>
+      <th style="padding:8px; border:1px solid #ddd;">Type</th>
+      <th style="padding:8px; border:1px solid #ddd;">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in transactions %}
+    <tr>
+      <td style="padding:8px; border:1px solid #ddd;">{{ t.transaction_date|date:"M. d, Y" }}</td>
+      <td style="padding:8px; border:1px solid #ddd;">{{ t.category.name }}</td>
+      <td style="padding:8px; border:1px solid #ddd;">{{ t.type }}</td>
+      <td style="padding:8px; border:1px solid #ddd;">{{ t.amount|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No transactions yet.</p>
+{% endif %}
+
+
+<!-- Reports -->
+<div class="reports">
+    <h2>Reports</h2>
+    <div class="reports-section">
+        <p>No reports available yet.</p>
+    </div>
+</div>
+
+</body>
+</html>

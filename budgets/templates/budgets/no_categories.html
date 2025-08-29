@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>No Categories Found</h2>
+    <p>You need to create at least one category before adding a budget.</p>
+    <a href="{% url 'add_category' %}" class="btn btn-primary">Add Category</a>
+</div>
+{% endblock %}

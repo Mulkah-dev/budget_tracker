@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Budget Tracker</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+  <div class="container">
+    <h1 class="mb-4">💰 Budget Tracker</h1>
+
+    <!-- LOGIN FORM -->
+    <div id="login-section">
+      <h3>Login</h3>
+      <input type="text" id="username" placeholder="Username" class="form-control mb-2">
+      <input type="password" id="password" placeholder="Password" class="form-control mb-2">
+      <button onclick="login()" class="btn btn-primary">Login</button>
+      <div id="login-msg" class="mt-2 text-danger"></div>
+    </div>
+
+    <!-- APP SECTION (hidden until login) -->
+    <div id="app-section" style="display:none;">
+      <h3>Categories</h3>
+      <input type="text" id="category-name" placeholder="Category name" class="form-control mb-2">
+      <button onclick="addCategory()" class="btn btn-success mb-3">Add Category</button>
+      <ul id="categories-list" class="list-group mb-4"></ul>
+
+      <h3>Transactions</h3>
+      <input type="number" id="amount" placeholder="Amount" class="form-control mb-2">
+      <input type="text" id="description" placeholder="Description" class="form-control mb-2">
+
+      <!-- Dropdown instead of raw ID -->
+      <select id="category-id" class="form-select mb-2">
+        <option value="">-- Select Category --</option>
+      </select>
+      <input type="date" id="transaction-date" class="form-control mb-2">
+<select id="type" class="form-control mb-2">
+  <option value="income">Income</option>
+  <option value="expense">Expense</option>
+</select>
+
+
+      <button onclick="addTransaction()" class="btn btn-success mb-3">Add Transaction</button>
+      <div id="txn-msg" class="text-danger mb-2"></div>
+      <ul id="transactions-list" class="list-group"></ul>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000"; // backend base URL
+    let token = localStorage.getItem("token") || "";
+
+    // LOGIN
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch(`${API_BASE}/api-token-auth/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.access || data.token) { // depending on JWT or TokenAuth
+          token = data.access || data.token;
+          localStorage.setItem("token", token);
+          document.getElementById("login-section").style.display = "none";
+          document.getElementById("app-section").style.display = "block";
+          loadCategories();
+          loadTransactions();
+        } else {
+          document.getElementById("login-msg").innerText = "Invalid credentials";
+        }
+      });
+    }
+
+    // CATEGORIES
+    function addCategory() {
+      const name = document.getElementById("category-name").value;
+
+      fetch(`${API_BASE}/categories/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Token ${token}`
+        },
+        body: JSON.stringify({ name })
+      })
+      .then(res => res.json())
+      .then(() => loadCategories());
+    }
+
+    function loadCategories() {
+      fetch(`${API_BASE}/categories/`, {
+        headers: { "Authorization": `Token ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("categories-list");
+        const dropdown = document.getElementById("category-id");
+        list.innerHTML = "";
+        dropdown.innerHTML = `<option value="">-- Select Category --</option>`;
+
+        data.forEach(cat => {
+          list.innerHTML += `<li class="list-group-item">${cat.id}: ${cat.name}</li>`;
+          dropdown.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+        });
+      });
+    }
+
+    // TRANSACTIONS
+    function addTransaction() {
+  const amount = document.getElementById("amount").value;
+  const description = document.getElementById("description").value;
+  const category = document.getElementById("category-id").value;
+  const type = document.getElementById("type").value;
+  const transaction_date = document.getElementById("transaction-date").value;
+
+  fetch(`${API_BASE}/api/transactions/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Token ${token}`
+    },
+    body: JSON.stringify({ amount, description, category, type, transaction_date })
+  })
+  .then(async (res) => {
+    const data = await res.json();
+    console.log("Status:", res.status);   // 👀 check status
+    console.log("Response:", data);       // 👀 check error details
+    if (res.ok) {
+      loadTransactions();
+    } else {
+      alert("Error: " + JSON.stringify(data));
+    }
+  })
+  .catch(err => console.error("Fetch error:", err));
+}
+
+    function loadTransactions() {
+      fetch(`${API_BASE}/transactions/`, {
+        headers: { "Authorization": `Token ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("transactions-list");
+        list.innerHTML = "";
+        data.forEach(txn => {
+          list.innerHTML += `<li class="list-group-item">₦${txn.amount} - ${txn.description} (Category: ${txn.category})</li>`;
+        });
+      });
+    }
+  </script>
+</body>
+</html>

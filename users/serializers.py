@@ -6,14 +6,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Don't return password in response
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
+            model = User
+            fields = ["id", "username", "email", "password"]
+            extra_kwargs = {
+                "password": {"write_only": True},
+                "email": {"required": True}
+            }
 
     def create(self, validated_data):
-        # Create a user with hashed password
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"]
         )
         return user

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- 1. Header / Navbar -->
+<nav class="navbar">
+  <div class="logo">💸 Budget Tracker</div>
+  <ul class="nav-links">
+    <li><a href="#">Dashboard</a></li>
+    <li><a href="#">Categories</a></li>
+    <li><a href="#">Transactions</a></li>
+    <li><a href="#">Reports</a></li>
+  </ul>
+  <div class="profile">
+    Welcome, {{ user.username }} |
+    <a href="{% url 'logout_user' %}">Logout</a>
+  </div>
+</nav>
+
+<hr />
+
+<!-- 2. Dashboard Overview -->
+<section class="dashboard-cards">
+  <div class="card">
+    <h3>💰 Total Budget</h3>
+    <p>{{ total_budget }}</p>
+  </div>
+  <div class="card">
+    <h3>📉 Total Expenses</h3>
+    <p>{{ total_expenses }}</p>
+  </div>
+  <div class="card">
+    <h3>📊 Remaining Balance</h3>
+    <p>{{ remaining_balance }}</p>
+  </div>
+</section>
+
+<hr />
+
+<!-- 3. Categories Section -->
+<section>
+  <h2>Categories</h2>
+  <a href="#">➕ Add Category</a>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Allocated</th>
+      <th>Spent</th>
+      <th>Remaining</th>
+    </tr>
+    {% for cat in categories %}
+    <tr>
+      <td>{{ cat.name }}</td>
+      <td>{{ cat.budget }}</td>
+      <td>{{ cat.spent }}</td>
+      <td>{{ cat.remaining }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<hr />
+
+<!-- 4. Transactions Section -->
+<section>
+  <h2>Recent Transactions</h2>
+  <a href="#">➕ Add Transaction</a>
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Amount</th>
+    </tr>
+    {% for t in transactions %}
+    <tr>
+      <td>{{ t.date }}</td>
+      <td>{{ t.category.name }}</td>
+      <td>{{ t.description }}</td>
+      <td>{{ t.amount }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+{% endblock %}

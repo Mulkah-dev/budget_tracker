@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Category, MonthlyBudget, Expense, Transaction
-from django.contrib.auth.models import User
+from .models import MonthlyBudget, Expense, Transaction
+from categories.models import Category
+
 User = get_user_model()
 
 # --------------------------
@@ -52,6 +53,9 @@ class MonthlyBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthlyBudget
         fields = '__all__'
+        extra_kwargs = {
+            'user': {'read_only': True},  # prevent user from being passed in request
+        }
 
     def validate_amount(self, value):
         # Ensure the budget amount is greater than zero
@@ -67,6 +71,9 @@ class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = '__all__'
+        extra_kwargs = {
+            'user': {'read_only': True},  # prevent user from being passed in request
+        }
 
     def validate_amount(self, value):
         # Ensure expense amount is greater than zero
@@ -90,7 +97,10 @@ class TransactionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Transaction
-        fields = ['id', 'amount', 'transaction_date', 'type', 'description', 'user', 'category', 'category_name']
+        fields = ['id', 'amount', 'transaction_date', 'type', 'description', 'category', 'category_name']
+        extra_kwargs = {
+            'user': {'read_only': True},  # prevent user from being passed in request
+        }
 
     def validate_amount(self, value):
         # Ensure transaction amount is greater than zero
@@ -113,3 +123,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+         raise serializers.ValidationError("Email already in use")
+        return value
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username already in use")
+        return value
