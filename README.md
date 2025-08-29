@@ -11,7 +11,7 @@ Backend: Django, Django REST Framework
 
 Authentication: DRF Token Authentication
 
-Database: SQLite (dev) → PostgreSQL (production)
+Database: SQLite (dev)
 
 Testing: Postman
 Will keep updating as the project progresses

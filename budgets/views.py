@@ -137,7 +137,7 @@ def user_home(request):
     )['total'] or 0
 
     # Total expenses for this user
-    total_expenses = Expense.objects.filter(user=user).aggregate(
+    total_expenses = Transaction.objects.filter(user=user, type='expense').aggregate(
         total=Sum('amount')
     )['total'] or 0
 
