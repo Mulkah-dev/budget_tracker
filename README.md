@@ -68,32 +68,38 @@ Login details
 username: mulkah
 password: newpassword123
 
----
 
-## 📌 API Endpoints
+## 🔗 API Endpoints (with Port)
 
 ### Authentication
 
-* POST /register/ → Register a new user
-* POST /login/ → Obtain token for authentication
+* **POST** `http://127.0.0.1:8000/register/` → Register a new user
+* **POST** `http://127.0.0.1:8000/login/` → Obtain token for authentication
 
 ### Budgets
 
-* GET /budgets/ → List user’s budgets
-* POST /budgets/ → Create a budget
-* GET /budgets/<id>/ → Retrieve budget
-* PUT /budgets/<id>/ → Update budget
-* DELETE /budgets/<id>/ → Delete budget
+* **GET** `http://127.0.0.1:8000/budgets/` → List user’s budgets
+* **POST** `http://127.0.0.1:8000/budgets/` → Create a budget
+* **GET** `http://127.0.0.1:8000/budgets/<id>/` → Retrieve budget by ID
+* **PUT** `http://127.0.0.1:8000/budgets/<id>/` → Update budget
+* **DELETE** `http://127.0.0.1:8000/budgets/<id>/` → Delete budget
 
 ### Categories
 
-* GET /categories/ → List categories
-* POST /categories/ → Create category
+* **GET** `http://127.0.0.1:8000/categories/` → List categories
+* **POST** `http://127.0.0.1:8000/categories/` → Create category
+* **GET** `http://127.0.0.1:8000/categories/<id>/` → Retrieve category by ID
+* **PUT** `http://127.0.0.1:8000/categories/<id>/` → Update category
+* **DELETE** `http://127.0.0.1:8000/categories/<id>/` → Delete category
 
 ### Transactions
 
-* GET /transactions/ → List transactions
-* POST /transactions/ → Create transaction
+* **GET** `http://127.0.0.1:8000/transactions/` → List transactions
+* **POST** `http://127.0.0.1:8000/transactions/` → Create transaction
+* **GET** `http://127.0.0.1:8000/transactions/<id>/` → Retrieve transaction by ID
+* **PUT** `http://127.0.0.1:8000/transactions/<id>/` → Update transaction
+* **DELETE** `http://127.0.0.1:8000/transactions/<id>/` → Delete transaction
+
 
 ---
 
