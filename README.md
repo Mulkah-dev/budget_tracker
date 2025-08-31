@@ -64,6 +64,10 @@ python manage.py runserver
 API will be live at:
 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
+Login details
+username: mulkah
+password: newpassword123
+
 ---
 
 ## 📌 API Endpoints
